@@ -1,0 +1,390 @@
+/* ProfitLens AI - Navigation Menu Styles */
+
+/* ============================================
+   DROPDOWN MENU STYLES
+   ============================================ */
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-arrow {
+    font-size: 0.7rem;
+    margin-left: 0.25rem;
+    transition: transform var(--transition-fast);
+}
+
+.dropdown:hover .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 220px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-base);
+    z-index: 1000;
+    margin-top: 0.5rem;
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu-right {
+    left: auto;
+    right: 0;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    border-bottom: 1px solid transparent;
+}
+
+.dropdown-item:hover {
+    background: var(--color-bg-tertiary);
+    color: var(--color-primary);
+    border-bottom-color: var(--color-border);
+}
+
+.dropdown-item.active {
+    background: var(--color-bg-tertiary);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-semibold);
+}
+
+.dropdown-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.dropdown-header strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--color-text-primary);
+}
+
+.dropdown-header small {
+    display: block;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin: 0.5rem 0;
+}
+
+/* ============================================
+   MOBILE MENU TOGGLE (HAMBURGER)
+   ============================================ */
+
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
+
+.mobile-menu-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--color-text-primary);
+    transition: all var(--transition-base);
+    border-radius: 2px;
+}
+
+.mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* ============================================
+   NAVBAR ENHANCEMENTS
+   ============================================ */
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+.navbar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    border-radius: var(--radius-md);
+}
+
+.navbar-link:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-primary);
+}
+
+.navbar-link.active {
+    background: var(--color-bg-tertiary);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-semibold);
+}
+
+.btn-primary-outline {
+    border: 1px solid var(--color-primary);
+    background: transparent;
+    color: var(--color-primary);
+}
+
+.btn-primary-outline:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-icon {
+    padding: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-icon:hover {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-primary);
+}
+
+.nav-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--color-border);
+    margin: 0 0.5rem;
+}
+
+/* ============================================
+   LANGUAGE SELECTOR
+   ============================================ */
+
+.language-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.language-btn:hover {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-primary);
+}
+
+.language-dropdown {
+    min-width: 180px;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: flex;
+    }
+
+    .navbar-menu {
+        position: fixed;
+        top: 60px;
+        left: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: calc(100vh - 60px);
+        background: var(--color-bg-primary);
+        border-right: 1px solid var(--color-border);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+        overflow-y: auto;
+        transition: left var(--transition-base);
+        z-index: 999;
+    }
+
+    .navbar-menu.active {
+        left: 0;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .navbar-menu li {
+        width: 100%;
+    }
+
+    .navbar-link {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .dropdown-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        border-left: 2px solid var(--color-primary);
+        margin-left: 1rem;
+        margin-top: 0.5rem;
+        background: transparent;
+    }
+
+    .dropdown:hover .dropdown-menu {
+        display: none;
+    }
+
+    .dropdown.active .dropdown-menu {
+        display: block;
+    }
+
+    .nav-divider {
+        width: 100%;
+        height: 1px;
+        margin: 0.5rem 0;
+    }
+
+    .hide-mobile {
+        display: none !important;
+    }
+
+    .btn-icon {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .language-btn {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .navbar-menu {
+        gap: 0.5rem;
+    }
+
+    .navbar-link {
+        padding: 0.5rem 0.75rem;
+        font-size: var(--font-size-sm);
+    }
+}
+
+/* ============================================
+   MOBILE MENU OVERLAY
+   ============================================ */
+
+@media (max-width: 768px) {
+    .navbar-menu.active::before {
+        content: '';
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+    }
+}
+
+/* ============================================
+   DROPDOWN MOBILE TOGGLE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .dropdown>a::after {
+        content: '▼';
+        margin-left: auto;
+        font-size: 0.7rem;
+        transition: transform var(--transition-fast);
+    }
+
+    .dropdown.active>a::after {
+        transform: rotate(180deg);
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+.navbar-link:focus-visible,
+.dropdown-item:focus-visible,
+.btn-icon:focus-visible,
+.language-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   SMOOTH SCROLLING FOR ANCHOR LINKS
+   ============================================ */
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* ============================================
+   NAVBAR STICKY (OPTIONAL)
+   ============================================ */
+
+.navbar.sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}

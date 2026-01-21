@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="ProfitLens AI - AI-powered profit leak detection and electricity bill intelligence for SMBs">
+  <title>ProfitLens AI - Stop Profit Leaks. Start Saving.</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="navigation.css">
+  <link rel="stylesheet" href="footer.css">
+  <link rel="stylesheet" href="hover-effects.css">
+</head>
+
+<body>
+  <!-- Navigation Header -->
+  <div id="header-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title" data-i18n="hero.title">Stop Profit Leaks. Start Saving.</h1>
+        <p class="hero-subtitle" data-i18n="hero.subtitle">
+          AI-powered profit leak detection and electricity bill intelligence for SMBs
+        </p>
+        <div class="hero-cta">
+          <button class="btn btn-primary btn-lg guest-only" onclick="navigateTo('auth.html')">
+            <span data-i18n="hero.cta">Get Started Free</span>
+            <span>→</span>
+          </button>
+          <button class="btn btn-primary btn-lg auth-only hidden" onclick="navigateTo('profit-analyzer.html')">
+            <span data-i18n="nav.dashboard">Go to Dashboard</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="section">
+    <div class="container">
+      <h2 class="text-center mb-xl" data-i18n="features.title">Powerful Features for Your Business</h2>
+
+      <div class="grid grid-3">
+        <div class="card feature-card">
+          <div class="feature-icon">💰</div>
+          <h3 data-i18n="features.profitLeak.title">Profit Leak Detection</h3>
+          <p data-i18n="features.profitLeak.description">
+            Identify hidden profit leaks with AI-powered analysis of your business data
+          </p>
+        </div>
+
+        <div class="card feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3 data-i18n="features.electricityBill.title">Electricity Bill Intelligence</h3>
+          <p data-i18n="features.electricityBill.description">
+            Detect overcharges and generate complaint drafts automatically
+          </p>
+        </div>
+
+        <div class="card feature-card">
+          <div class="feature-icon">🌍</div>
+          <h3 data-i18n="features.multiLanguage.title">Multi-Language Support</h3>
+          <p data-i18n="features.multiLanguage.description">
+            Available in English, Hindi, Chinese, and Indonesian
+          </p>
+        </div>
+
+        <div class="card feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3 data-i18n="features.insights.title">Actionable Insights</h3>
+          <p data-i18n="features.insights.description">
+            Get clear, actionable recommendations with one-click "Fix Now" CTAs
+          </p>
+        </div>
+
+        <div class="card feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Smart Analytics</h3>
+          <p>Comprehensive business intelligence powered by Claude Sonnet 4.5</p>
+        </div>
+
+        <div class="card feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>Secure & Private</h3>
+          <p>Your business data is encrypted and never shared with third parties</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="section">
+    <div class="container">
+      <h2 class="text-center mb-lg" data-i18n="pricing.title">Simple, Transparent Pricing</h2>
+      <p class="text-center text-secondary mb-xl" data-i18n="pricing.subtitle">
+        Choose the plan that fits your business
+      </p>
+
+      <div class="grid grid-4" id="pricing-grid">
+        <!-- Free Plan -->
+        <div class="card pricing-card">
+          <div class="card-header">
+            <h3 class="card-title" data-i18n="pricing.free">Free</h3>
+          </div>
+          <div class="card-body">
+            <div class="pricing-price">
+              <span class="pricing-currency">₹</span>0
+            </div>
+            <ul class="pricing-features">
+              <li class="pricing-feature">3 Profit Analyses</li>
+              <li class="pricing-feature">2 Electricity Analyses</li>
+              <li class="pricing-feature">Basic Insights</li>
+            </ul>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-secondary btn-lg" onclick="selectPlan('free')">
+              <span data-i18n="pricing.choosePlan">Choose Plan</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Starter Plan -->
+        <div class="card pricing-card">
+          <div class="card-header">
+            <h3 class="card-title">Starter</h3>
+          </div>
+          <div class="card-body">
+            <div class="pricing-price">
+              <span class="pricing-currency">₹</span>499
+              <span class="pricing-period" data-i18n="pricing.perMonth">/month</span>
+            </div>
+            <ul class="pricing-features">
+              <li class="pricing-feature">20 Profit Analyses</li>
+              <li class="pricing-feature">10 Electricity Analyses</li>
+              <li class="pricing-feature">Advanced Insights</li>
+              <li class="pricing-feature">Export Reports</li>
+            </ul>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-secondary btn-lg" onclick="selectPlan('starter')">
+              <span data-i18n="pricing.choosePlan">Choose Plan</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Professional Plan (Most Popular) -->
+        <div class="card pricing-card popular">
+          <div class="pricing-badge" data-i18n="pricing.popular">Most Popular</div>
+          <div class="card-header">
+            <h3 class="card-title">Professional</h3>
+          </div>
+          <div class="card-body">
+            <div class="pricing-price">
+              <span class="pricing-currency">₹</span>999
+              <span class="pricing-period" data-i18n="pricing.perMonth">/month</span>
+            </div>
+            <ul class="pricing-features">
+              <li class="pricing-feature">Unlimited Analyses</li>
+              <li class="pricing-feature">Advanced Insights</li>
+              <li class="pricing-feature">Priority Support</li>
+              <li class="pricing-feature">Export Reports</li>
+            </ul>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary btn-lg" onclick="selectPlan('professional')">
+              <span data-i18n="pricing.choosePlan">Choose Plan</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="card pricing-card">
+          <div class="card-header">
+            <h3 class="card-title">Enterprise</h3>
+          </div>
+          <div class="card-body">
+            <div class="pricing-price">
+              <span class="pricing-currency">₹</span>1999
+              <span class="pricing-period" data-i18n="pricing.perMonth">/month</span>
+            </div>
+            <ul class="pricing-features">
+              <li class="pricing-feature">Everything in Professional</li>
+              <li class="pricing-feature">Multi-Location Support</li>
+              <li class="pricing-feature">Custom Integration</li>
+              <li class="pricing-feature">Dedicated Support</li>
+            </ul>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-secondary btn-lg" onclick="selectPlan('enterprise')">
+              <span data-i18n="pricing.choosePlan">Choose Plan</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section">
+    <div class="container">
+      <div class="card" style="text-align: center; padding: 3rem;">
+        <h2 class="mb-lg">Ready to Stop Profit Leaks?</h2>
+        <p class="text-secondary mb-xl">
+          Join thousands of SMBs saving money with ProfitLens AI
+        </p>
+        <button class="btn btn-primary btn-lg guest-only" onclick="navigateTo('auth.html')">
+          <span data-i18n="hero.cta">Get Started Free</span>
+          <span>→</span>
+        </button>
+        <button class="btn btn-primary btn-lg auth-only hidden" onclick="navigateTo('profit-analyzer.html')">
+          <span>Start Analyzing</span>
+          <span>→</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="utils.js"></script>
+  <script src="translations.js"></script>
+  <script src="prompts.js"></script>
+  <script src="claude-api.js"></script>
+  <script src="backend-api.js"></script>
+  <script src="auth.js"></script>
+  <script src="shared-components.js"></script>
+  <script src="demo-data.js"></script>
+  <script src="security.js"></script>
+  <script src="billing.js"></script>
+  <script src="geo-language.js"></script>
+  <script src="email-service.js"></script>
+  <script src="app.js"></script>
+
+  <script>
+    // Initialize security
+    initializeSecurity();
+    // Initialize email service
+    initializeEmailService();
+    // Initialize auto language detection (first visit)
+    initializeAutoLanguage();
+    // Initialize header and footer
+    initializeHeaderFooter('home');
+    // Initialize demo data
+    initializeDemoData();
+  </script>
+</body>
+
+</html>

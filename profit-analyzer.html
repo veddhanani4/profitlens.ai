@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Profit Leak Analyzer - ProfitLens AI">
+    <title>Profit Analyzer - ProfitLens AI</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .dashboard-header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .dashboard-nav {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .dashboard-nav-link {
+            padding: 0.75rem 1.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+        }
+
+        .dashboard-nav-link:hover,
+        .dashboard-nav-link.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .usage-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .usage-stat {
+            flex: 1;
+            padding: 1rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+        }
+
+        .usage-stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+            margin-bottom: 0.5rem;
+        }
+
+        .usage-stat-value {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+        }
+
+        .leak-card {
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .leak-card.priority-high {
+            border-left-color: var(--color-error);
+        }
+
+        .leak-card.priority-medium {
+            border-left-color: var(--color-warning);
+        }
+
+        .leak-card.priority-low {
+            border-left-color: var(--color-info);
+        }
+
+        .leak-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .leak-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+        }
+
+        .leak-badge.high {
+            background: var(--color-error);
+            color: white;
+        }
+
+        .leak-badge.medium {
+            background: var(--color-warning);
+            color: var(--color-bg-primary);
+        }
+
+        .leak-badge.low {
+            background: var(--color-info);
+            color: white;
+        }
+
+        .leak-savings {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-success);
+            margin: 1rem 0;
+        }
+
+        .leak-actions {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .leak-action {
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .leak-action:last-child {
+            border-bottom: none;
+        }
+
+        .leak-action-number {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-bold);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="index.html" class="navbar-brand">ProfitLens AI</a>
+
+                <ul class="navbar-menu">
+                    <li><a href="profit-analyzer.html" class="navbar-link active">Profit Analyzer</a></li>
+                    <li><a href="electricity-analyzer.html" class="navbar-link">Electricity Analyzer</a></li>
+                    <li>
+                        <button class="btn btn-secondary btn-sm" onclick="logout()">
+                            <span data-i18n="nav.logout">Logout</span>
+                        </button>
+                    </li>
+                    <li>
+                        <div class="language-selector">
+                            <button class="language-btn" id="language-btn">
+                                <span>🇬🇧</span>
+                                <span>English</span>
+                                <span>▼</span>
+                            </button>
+                            <div class="language-dropdown" id="language-dropdown"></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <section class="dashboard-header">
+        <div class="container">
+            <h1 data-i18n="profitAnalyzer.title">Profit Leak Analyzer</h1>
+            <p class="text-secondary" data-i18n="profitAnalyzer.subtitle">
+                Enter your business data to identify profit leaks
+            </p>
+
+            <!-- Usage Stats -->
+            <div class="usage-stats">
+                <div class="usage-stat">
+                    <div class="usage-stat-label">Current Plan</div>
+                    <div class="usage-stat-value" id="current-plan">Free</div>
+                </div>
+                <div class="usage-stat">
+                    <div class="usage-stat-label">Analyses Used</div>
+                    <div class="usage-stat-value" id="analyses-used">0 / 3</div>
+                </div>
+                <div class="usage-stat">
+                    <div class="usage-stat-label">Potential Savings Found</div>
+                    <div class="usage-stat-value" id="total-savings">₹0</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container">
+            <div class="grid grid-2">
+                <!-- Input Form -->
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Business Data</h3>
+                            <p class="card-description" data-i18n="profitAnalyzer.partialDataNote">
+                                You can submit partial data. More data = better insights.
+                            </p>
+                        </div>
+                        <div class="card-body">
+                            <form id="profit-form" onsubmit="analyzeProfitLeaks(event)">
+                                <div class="form-group">
+                                    <label class="form-label" data-i18n="profitAnalyzer.revenue">Monthly Revenue
+                                        (₹)</label>
+                                    <input type="number" class="form-input" id="revenue" placeholder="100000" min="0"
+                                        step="1000">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" data-i18n="profitAnalyzer.costs">Monthly Costs (₹)</label>
+                                    <input type="number" class="form-input" id="costs" placeholder="75000" min="0"
+                                        step="1000">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" data-i18n="profitAnalyzer.inventory">Inventory Value
+                                        (₹)</label>
+                                    <input type="number" class="form-input" id="inventory" placeholder="50000" min="0"
+                                        step="1000">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" data-i18n="profitAnalyzer.employees">Number of
+                                        Employees</label>
+                                    <input type="number" class="form-input" id="employees" placeholder="10" min="1">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" data-i18n="profitAnalyzer.industry">Industry</label>
+                                    <select class="form-select" id="industry">
+                                        <option value="">Select Industry</option>
+                                        <option value="retail" data-i18n="profitAnalyzer.industries.retail">Retail
+                                        </option>
+                                        <option value="manufacturing"
+                                            data-i18n="profitAnalyzer.industries.manufacturing">Manufacturing</option>
+                                        <option value="services" data-i18n="profitAnalyzer.industries.services">Services
+                                        </option>
+                                        <option value="hospitality" data-i18n="profitAnalyzer.industries.hospitality">
+                                            Hospitality</option>
+                                        <option value="technology" data-i18n="profitAnalyzer.industries.technology">
+                                            Technology</option>
+                                        <option value="other" data-i18n="profitAnalyzer.industries.other">Other</option>
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                    <span data-i18n="profitAnalyzer.analyze">Analyze Now</span>
+                                    <span>→</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div>
+                    <div id="results-container">
+                        <div class="card" style="text-align: center; padding: 3rem;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">📊</div>
+                            <h3>Ready to Analyze</h3>
+                            <p class="text-secondary">
+                                Fill in your business data and click "Analyze Now" to identify profit leaks
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="translations.js"></script>
+    <script src="components.js"></script>
+    <script src="prompts.js"></script>
+    <script src="claude-api.js"></script>
+    <script src="backend-api.js"></script>
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        // Check authentication
+        if (!authManager.isAuthenticated()) {
+            window.location.href = 'auth.html';
+        }
+
+        // Update usage stats
+        function updateUsageStats() {
+            const user = authManager.getCurrentUser();
+            const plan = CONFIG.pricing[user.plan];
+            const stats = authManager.getUsageStats();
+
+            document.getElementById('current-plan').textContent = plan.name;
+
+            const used = stats.profitAnalysis.used;
+            const limit = stats.profitAnalysis.limit === -1 ? '∞' : stats.profitAnalysis.limit;
+            document.getElementById('analyses-used').textContent = `${used} / ${limit}`;
+
+            // Calculate total savings from storage
+            const savedAnalyses = storage.get('profitAnalyses', []);
+            const totalSavings = savedAnalyses.reduce((sum, analysis) => {
+                return sum + (analysis.data?.summary?.totalPotentialSavings || 0);
+            }, 0);
+            document.getElementById('total-savings').textContent = formatCurrency(totalSavings);
+        }
+
+        updateUsageStats();
+
+        // Analyze profit leaks
+        async function analyzeProfitLeaks(event) {
+            event.preventDefault();
+
+            // Check feature access
+            if (!checkFeatureAccess('profitAnalysis')) {
+                return;
+            }
+
+            // Check API configuration
+            if (!checkAPIConfiguration()) {
+                return;
+            }
+
+            // Get form data
+            const businessData = {
+                revenue: parseFloat(document.getElementById('revenue').value) || null,
+                costs: parseFloat(document.getElementById('costs').value) || null,
+                inventory: parseFloat(document.getElementById('inventory').value) || null,
+                employees: parseInt(document.getElementById('employees').value) || null,
+                industry: document.getElementById('industry').value || null
+            };
+
+            // Validate at least one field is filled
+            if (!Object.values(businessData).some(v => v !== null)) {
+                toast.warning('Please enter at least one business metric');
+                return;
+            }
+
+            // Show loading
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.innerHTML = `
+        <div class="card" style="text-align: center; padding: 3rem;">
+          <div class="spinner" style="margin: 0 auto 1rem;"></div>
+          <h3 data-i18n="profitAnalyzer.analyzing">Analyzing...</h3>
+          <p class="text-secondary">AI is analyzing your business data to identify profit leaks</p>
+        </div>
+      `;
+
+            try {
+                // Call Claude API
+                const result = await claudeAPI.analyzeProfitLeaks(businessData, currentLanguage);
+
+                if (!result.success) {
+                    throw new Error(result.error);
+                }
+
+                // Increment usage
+                authManager.incrementUsage('profitAnalysis');
+                updateUsageStats();
+
+                // Save analysis
+                const savedAnalyses = storage.get('profitAnalyses', []);
+                savedAnalyses.push({
+                    id: generateId(),
+                    timestamp: new Date().toISOString(),
+                    data: result.data,
+                    businessData
+                });
+                storage.set('profitAnalyses', savedAnalyses);
+
+                // Display results
+                displayResults(result.data);
+
+                toast.success('Analysis complete!');
+            } catch (error) {
+                console.error('Analysis error:', error);
+                resultsContainer.innerHTML = `
+          <div class="card" style="text-align: center; padding: 3rem;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">⚠️</div>
+            <h3>Analysis Failed</h3>
+            <p class="text-secondary">${error.message}</p>
+            <button class="btn btn-primary" onclick="location.reload()" style="margin-top: 1rem;">
+              Try Again
+            </button>
+          </div>
+        `;
+                toast.error('Analysis failed: ' + error.message);
+            }
+        }
+
+        // Display analysis results
+        function displayResults(data) {
+            const resultsContainer = document.getElementById('results-container');
+
+            if (!data.leaks || data.leaks.length === 0) {
+                resultsContainer.innerHTML = `
+          <div class="card" style="text-align: center; padding: 3rem;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">✓</div>
+            <h3>No Major Leaks Found</h3>
+            <p class="text-secondary">
+              Your business appears to be running efficiently! Check back regularly for ongoing optimization.
+            </p>
+            ${data.recommendations && data.recommendations.length > 0 ? `
+              <div style="margin-top: 2rem; text-align: left;">
+                <h4>Recommendations:</h4>
+                <ul style="margin-top: 1rem;">
+                  ${data.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                </ul>
+              </div>
+            ` : ''}
+          </div>
+        `;
+                return;
+            }
+
+            // Display summary and leaks
+            let html = `
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-header">
+            <h3 class="card-title" data-i18n="profitAnalyzer.results">Analysis Results</h3>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+              <div>
+                <div class="text-secondary" style="font-size: var(--font-size-sm);">
+                  <span data-i18n="profitAnalyzer.leaksFound">Leaks Found</span>
+                </div>
+                <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-error);">
+                  ${data.summary.totalLeaksFound}
+                </div>
+              </div>
+              <div>
+                <div class="text-secondary" style="font-size: var(--font-size-sm);">
+                  <span data-i18n="profitAnalyzer.potentialSavings">Potential Savings</span>
+                </div>
+                <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-success);">
+                  ${formatCurrency(data.summary.totalPotentialSavings)}/mo
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+            // Display each leak
+            data.leaks.forEach((leak, index) => {
+                html += `
+          <div class="card leak-card priority-${leak.priority}">
+            <div class="leak-header">
+              <div>
+                <h3 style="margin-bottom: 0.5rem;">${leak.title}</h3>
+                <span class="leak-badge ${leak.priority}">${leak.priority} Priority</span>
+              </div>
+              <div class="leak-savings">
+                ${formatCurrency(leak.monthlySavings)}<span style="font-size: var(--font-size-base);">/mo</span>
+              </div>
+            </div>
+            
+            <p style="color: var(--color-text-secondary); margin-bottom: 1rem;">
+              ${leak.description}
+            </p>
+
+            ${leak.actions && leak.actions.length > 0 ? `
+              <h4 style="margin-bottom: 0.5rem;">Action Steps:</h4>
+              <ul class="leak-actions">
+                ${leak.actions.map((action, i) => `
+                  <li class="leak-action">
+                    <div class="leak-action-number">${i + 1}</div>
+                    <div>
+                      <div>${action.step}</div>
+                      <div style="font-size: var(--font-size-sm); color: var(--color-text-tertiary); margin-top: 0.25rem;">
+                        Timeline: ${action.timeline} • Effort: ${action.effort}
+                      </div>
+                    </div>
+                  </li>
+                `).join('')}
+              </ul>
+            ` : ''}
+
+            <button class="btn btn-success" style="width: 100%; margin-top: 1rem;">
+              <span data-i18n="profitAnalyzer.fixNow">Fix Now</span>
+              <span>→</span>
+            </button>
+          </div>
+        `;
+            });
+
+            resultsContainer.innerHTML = html;
+        }
+    </script>
+</body>
+
+</html>

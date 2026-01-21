@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Billing and Subscription Management - ProfitLens AI">
+    <title>Billing - ProfitLens AI</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="responsive.css">
+
+    <!-- Razorpay SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+        .billing-container {
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+
+        .billing-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .current-plan {
+            background: var(--gradient-primary);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .plan-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-md);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: 1rem;
+        }
+
+        .billing-section {
+            margin-bottom: 3rem;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .payment-method:hover {
+            border-color: var(--color-primary);
+            background: var(--color-bg-secondary);
+        }
+
+        .payment-method.selected {
+            border-color: var(--color-primary);
+            background: var(--color-bg-secondary);
+        }
+
+        .payment-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-md);
+            font-size: 1.5rem;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .invoice-table th,
+        .invoice-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .invoice-table th {
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-secondary);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .status-paid {
+            background: rgba(52, 211, 153, 0.2);
+            color: #34d399;
+        }
+
+        .status-pending {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .status-failed {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <div class="billing-container">
+        <div class="container" style="max-width: 1000px;">
+            <!-- Header -->
+            <div class="billing-header">
+                <h1>Billing & Subscription</h1>
+                <p class="text-secondary">Manage your subscription and payment methods</p>
+            </div>
+
+            <!-- Current Plan -->
+            <div class="current-plan">
+                <div class="plan-badge" id="current-plan-badge">Free Plan</div>
+                <h2 style="margin: 0 0 0.5rem 0;">Current Subscription</h2>
+                <p style="margin: 0; opacity: 0.9;" id="plan-description">
+                    3 profit analyses and 2 electricity analyses per month
+                </p>
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="showUpgradeModal()">
+                        Upgrade Plan
+                    </button>
+                    <button class="btn btn-secondary" onclick="managePlan()" id="manage-btn" style="display: none;">
+                        Manage Subscription
+                    </button>
+                </div>
+            </div>
+
+            <!-- Usage Stats -->
+            <div class="billing-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Usage This Month</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="grid grid-2">
+                            <div>
+                                <p class="text-secondary" style="margin-bottom: 0.5rem;">Profit Analyses</p>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div
+                                        style="flex: 1; height: 8px; background: var(--color-bg-secondary); border-radius: var(--radius-sm); overflow: hidden;">
+                                        <div id="profit-usage-bar"
+                                            style="height: 100%; background: var(--gradient-primary); width: 0%; transition: width 0.5s ease;">
+                                        </div>
+                                    </div>
+                                    <span id="profit-usage-text" style="font-weight: var(--font-weight-semibold);">0 /
+                                        3</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-secondary" style="margin-bottom: 0.5rem;">Electricity Analyses</p>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div
+                                        style="flex: 1; height: 8px; background: var(--color-bg-secondary); border-radius: var(--radius-sm); overflow: hidden;">
+                                        <div id="electricity-usage-bar"
+                                            style="height: 100%; background: var(--gradient-accent); width: 0%; transition: width 0.5s ease;">
+                                        </div>
+                                    </div>
+                                    <span id="electricity-usage-text"
+                                        style="font-weight: var(--font-weight-semibold);">0 / 2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="billing-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Payment Methods</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="payment-methods-list">
+                            <p class="text-secondary">No payment methods added yet.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="addPaymentMethod()" style="margin-top: 1rem;">
+                            Add Payment Method
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Billing History -->
+            <div class="billing-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Billing History</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="overflow-x: auto;">
+                            <table class="invoice-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Invoice</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="billing-history">
+                                    <tr>
+                                        <td colspan="5" class="text-secondary" style="text-align: center;">
+                                            No billing history yet
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upgrade Modal -->
+    <div id="upgrade-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2>Choose Your Plan</h2>
+                <button class="modal-close" onclick="closeUpgradeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="grid grid-3" id="pricing-plans">
+                    <!-- Plans will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="translations.js"></script>
+    <script src="components.js"></script>
+    <script src="shared-components.js"></script>
+    <script src="auth.js"></script>
+    <script src="security.js"></script>
+    <script src="billing.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        // Initialize
+        initializeHeaderFooter('');
+        initializeSecurity();
+
+        // Check authentication
+        if (!authManager.isAuthenticated()) {
+            window.location.href = 'auth.html';
+        }
+
+        // Load billing data
+        loadBillingData();
+
+        function loadBillingData() {
+            const user = authManager.getCurrentUser();
+            if (!user) return;
+
+            // Update current plan
+            const planNames = {
+                free: 'Free Plan',
+                starter: 'Starter Plan',
+                professional: 'Professional Plan',
+                enterprise: 'Enterprise Plan'
+            };
+
+            const planDescriptions = {
+                free: '3 profit analyses and 2 electricity analyses per month',
+                starter: '20 profit analyses and 10 electricity analyses per month',
+                professional: 'Unlimited analyses with advanced insights',
+                enterprise: 'Unlimited analyses with custom integration and dedicated support'
+            };
+
+            document.getElementById('current-plan-badge').textContent = planNames[user.plan] || 'Free Plan';
+            document.getElementById('plan-description').textContent = planDescriptions[user.plan] || planDescriptions.free;
+
+            // Show manage button for paid plans
+            if (user.plan !== 'free') {
+                document.getElementById('manage-btn').style.display = 'inline-block';
+            }
+
+            // Update usage stats
+            const usage = user.usage || { profitAnalysis: 0, electricityAnalysis: 0 };
+            const limits = {
+                free: { profit: 3, electricity: 2 },
+                starter: { profit: 20, electricity: 10 },
+                professional: { profit: Infinity, electricity: Infinity },
+                enterprise: { profit: Infinity, electricity: Infinity }
+            };
+
+            const limit = limits[user.plan] || limits.free;
+
+            const profitPercent = limit.profit === Infinity ? 0 : (usage.profitAnalysis / limit.profit) * 100;
+            const electricityPercent = limit.electricity === Infinity ? 0 : (usage.electricityAnalysis / limit.electricity) * 100;
+
+            document.getElementById('profit-usage-bar').style.width = `${Math.min(profitPercent, 100)}%`;
+            document.getElementById('electricity-usage-bar').style.width = `${Math.min(electricityPercent, 100)}%`;
+
+            document.getElementById('profit-usage-text').textContent =
+                limit.profit === Infinity ? `${usage.profitAnalysis} / Unlimited` : `${usage.profitAnalysis} / ${limit.profit}`;
+            document.getElementById('electricity-usage-text').textContent =
+                limit.electricity === Infinity ? `${usage.electricityAnalysis} / Unlimited` : `${usage.electricityAnalysis} / ${limit.electricity}`;
+
+            // Load payment methods
+            loadPaymentMethods();
+
+            // Load billing history
+            loadBillingHistory();
+        }
+
+        function loadPaymentMethods() {
+            const paymentMethods = storage.get('paymentMethods', []);
+            const user = authManager.getCurrentUser();
+            const userMethods = paymentMethods.filter(pm => pm.userId === user.id);
+
+            if (userMethods.length === 0) {
+                return;
+            }
+
+            const html = userMethods.map(pm => `
+        <div class="payment-method ${pm.isDefault ? 'selected' : ''}" onclick="selectPaymentMethod('${pm.id}')">
+          <div class="payment-icon">💳</div>
+          <div style="flex: 1;">
+            <div style="font-weight: var(--font-weight-semibold);">${pm.type} •••• ${pm.last4}</div>
+            <div class="text-secondary" style="font-size: var(--font-size-sm);">Expires ${pm.expiry}</div>
+          </div>
+          ${pm.isDefault ? '<span class="status-badge status-paid">Default</span>' : ''}
+          <button class="btn btn-secondary btn-sm" onclick="removePaymentMethod('${pm.id}'); event.stopPropagation();">Remove</button>
+        </div>
+      `).join('');
+
+            document.getElementById('payment-methods-list').innerHTML = html;
+        }
+
+        function loadBillingHistory() {
+            const invoices = storage.get('invoices', []);
+            const user = authManager.getCurrentUser();
+            const userInvoices = invoices.filter(inv => inv.userId === user.id);
+
+            if (userInvoices.length === 0) {
+                return;
+            }
+
+            const html = userInvoices.map(inv => `
+        <tr>
+          <td>${new Date(inv.date).toLocaleDateString()}</td>
+          <td>${inv.description}</td>
+          <td>₹${inv.amount.toLocaleString()}</td>
+          <td><span class="status-badge status-${inv.status}">${inv.status.toUpperCase()}</span></td>
+          <td><a href="#" onclick="downloadInvoice('${inv.id}'); return false;">Download</a></td>
+        </tr>
+      `).join('');
+
+            document.getElementById('billing-history').innerHTML = html;
+        }
+
+        function showUpgradeModal() {
+            const modal = document.getElementById('upgrade-modal');
+            modal.style.display = 'flex';
+
+            // Load pricing plans
+            const plans = [
+                {
+                    name: 'Starter',
+                    price: 499,
+                    features: ['20 profit analyses/month', '10 electricity analyses/month', 'Advanced insights', 'Email support'],
+                    plan: 'starter'
+                },
+                {
+                    name: 'Professional',
+                    price: 999,
+                    features: ['Unlimited analyses', 'Advanced insights', 'Priority support', 'Export reports'],
+                    plan: 'professional',
+                    popular: true
+                },
+                {
+                    name: 'Enterprise',
+                    price: 1999,
+                    features: ['Everything in Professional', 'Multi-location support', 'Custom integration', 'Dedicated support'],
+                    plan: 'enterprise'
+                }
+            ];
+
+            const html = plans.map(plan => `
+        <div class="card ${plan.popular ? 'popular-plan' : ''}">
+          ${plan.popular ? '<div class="popular-badge">Most Popular</div>' : ''}
+          <div class="card-header">
+            <h3>${plan.name}</h3>
+            <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); margin: 1rem 0;">
+              ₹${plan.price}<span style="font-size: var(--font-size-sm); font-weight: normal;">/month</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              ${plan.features.map(f => `<li style="margin-bottom: 0.75rem;">✓ ${f}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary" style="width: 100%;" onclick="subscribeToPlan('${plan.plan}', ${plan.price})">
+              Subscribe Now
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+            document.getElementById('pricing-plans').innerHTML = html;
+        }
+
+        function closeUpgradeModal() {
+            document.getElementById('upgrade-modal').style.display = 'none';
+        }
+
+        async function subscribeToPlan(plan, amount) {
+            const user = authManager.getCurrentUser();
+
+            // Initialize Razorpay payment
+            const options = {
+                key: 'rzp_test_YOUR_KEY_HERE', // Replace with actual Razorpay key
+                amount: amount * 100, // Amount in paise
+                currency: 'INR',
+                name: 'ProfitLens AI',
+                description: `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan Subscription`,
+                image: 'https://your-logo-url.com/logo.png',
+                handler: function (response) {
+                    handlePaymentSuccess(response, plan, amount);
+                },
+                prefill: {
+                    name: user.fullName,
+                    email: user.email
+                },
+                theme: {
+                    color: '#6366f1'
+                }
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.open();
+        }
+
+        function handlePaymentSuccess(response, plan, amount) {
+            // Update user plan
+            const user = authManager.getCurrentUser();
+            user.plan = plan;
+
+            const users = storage.get('users', []);
+            const userIndex = users.findIndex(u => u.id === user.id);
+            if (userIndex !== -1) {
+                users[userIndex] = user;
+                storage.set('users', users);
+            }
+
+            // Save invoice
+            const invoices = storage.get('invoices', []);
+            invoices.push({
+                id: generateId(),
+                userId: user.id,
+                date: new Date().toISOString(),
+                description: `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan Subscription`,
+                amount,
+                status: 'paid',
+                paymentId: response.razorpay_payment_id
+            });
+            storage.set('invoices', invoices);
+
+            toast.success('Subscription activated successfully!');
+            closeUpgradeModal();
+            loadBillingData();
+        }
+
+        function addPaymentMethod() {
+            toast.info('Payment method management coming soon!');
+            // In production, integrate with Razorpay/Stripe for card management
+        }
+
+        function selectPaymentMethod(id) {
+            toast.info('Payment method selected');
+        }
+
+        function removePaymentMethod(id) {
+            if (confirm('Remove this payment method?')) {
+                const paymentMethods = storage.get('paymentMethods', []);
+                const filtered = paymentMethods.filter(pm => pm.id !== id);
+                storage.set('paymentMethods', filtered);
+                loadPaymentMethods();
+                toast.success('Payment method removed');
+            }
+        }
+
+        function managePlan() {
+            if (confirm('Cancel your subscription? You will lose access to premium features.')) {
+                const user = authManager.getCurrentUser();
+                user.plan = 'free';
+
+                const users = storage.get('users', []);
+                const userIndex = users.findIndex(u => u.id === user.id);
+                if (userIndex !== -1) {
+                    users[userIndex] = user;
+                    storage.set('users', users);
+                }
+
+                toast.success('Subscription cancelled');
+                loadBillingData();
+            }
+        }
+
+        function downloadInvoice(id) {
+            toast.info('Downloading invoice...');
+            // In production, generate PDF invoice
+        }
+
+        // Close modal on outside click
+        window.onclick = function (event) {
+            const modal = document.getElementById('upgrade-modal');
+            if (event.target === modal) {
+                closeUpgradeModal();
+            }
+        };
+    </script>
+</body>
+
+</html>

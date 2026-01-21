@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact ProfitLens AI - Get Help and Support">
+    <title>Contact Us - ProfitLens AI</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .contact-info-card {
+            padding: 1.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            transition: all var(--transition-base);
+        }
+
+        .contact-info-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--color-primary);
+        }
+
+        .contact-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .chatbot-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chatbot-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(139, 92, 246, 0.6);
+        }
+
+        .chatbot-window {
+            position: fixed;
+            bottom: 100px;
+            right: 2rem;
+            width: 380px;
+            height: 550px;
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-2xl);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chatbot-window.active {
+            display: flex;
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chatbot-header {
+            padding: 1rem 1.5rem;
+            background: var(--gradient-primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: var(--font-size-lg);
+        }
+
+        .chatbot-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background var(--transition-fast);
+        }
+
+        .chatbot-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chatbot-message {
+            display: flex;
+            gap: 0.75rem;
+            max-width: 85%;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .chatbot-message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .chatbot-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .chatbot-message.user .chatbot-avatar {
+            background: var(--color-secondary);
+        }
+
+        .chatbot-bubble {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-lg);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            word-wrap: break-word;
+        }
+
+        .chatbot-message.user .chatbot-bubble {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .chatbot-input-container {
+            padding: 1rem;
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chatbot-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            color: var(--color-text-primary);
+            font-family: var(--font-family-primary);
+            font-size: var(--font-size-base);
+        }
+
+        .chatbot-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .chatbot-send {
+            padding: 0.75rem 1.25rem;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: var(--radius-lg);
+            color: white;
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .chatbot-send:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .chatbot-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .chatbot-typing {
+            display: flex;
+            gap: 0.25rem;
+            padding: 0.75rem 1rem;
+        }
+
+        .chatbot-typing span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            animation: typing 1.4s infinite;
+        }
+
+        .chatbot-typing span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .chatbot-typing span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chatbot-window {
+                right: 1rem;
+                left: 1rem;
+                width: auto;
+                bottom: 90px;
+            }
+
+            .chatbot-container {
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="index.html" class="navbar-brand">ProfitLens AI</a>
+
+                <ul class="navbar-menu">
+                    <li><a href="index.html#features" class="navbar-link">Features</a></li>
+                    <li><a href="index.html#pricing" class="navbar-link">Pricing</a></li>
+                    <li><a href="contact.html" class="navbar-link active">Contact</a></li>
+                    <li class="guest-only"><a href="auth.html" class="navbar-link">Login</a></li>
+                    <li class="auth-only hidden"><a href="profit-analyzer.html" class="navbar-link">Dashboard</a></li>
+                    <li class="auth-only hidden">
+                        <button class="btn btn-secondary btn-sm" onclick="logout()">Logout</button>
+                    </li>
+                    <li>
+                        <div class="language-selector">
+                            <button class="language-btn" id="language-btn">
+                                <span>🇬🇧</span>
+                                <span>English</span>
+                                <span>▼</span>
+                            </button>
+                            <div class="language-dropdown" id="language-dropdown"></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contact Section -->
+    <section class="section">
+        <div class="container">
+            <div class="text-center mb-xl">
+                <h1>Get in Touch</h1>
+                <p class="text-secondary">Have questions? We're here to help!</p>
+            </div>
+
+            <div class="contact-grid">
+                <!-- Contact Form -->
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Send us a Message</h3>
+                            <p class="card-description">Fill out the form and we'll get back to you within 24 hours</p>
+                        </div>
+                        <div class="card-body">
+                            <form id="contact-form" onsubmit="handleContactSubmit(event)">
+                                <div class="form-group">
+                                    <label class="form-label">Your Name</label>
+                                    <input type="text" class="form-input" id="contact-name" placeholder="John Doe"
+                                        required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Email Address</label>
+                                    <input type="email" class="form-input" id="contact-email"
+                                        placeholder="john@example.com" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Subject</label>
+                                    <select class="form-select" id="contact-subject" required>
+                                        <option value="">Select a subject</option>
+                                        <option value="general">General Inquiry</option>
+                                        <option value="support">Technical Support</option>
+                                        <option value="billing">Billing Question</option>
+                                        <option value="feature">Feature Request</option>
+                                        <option value="partnership">Partnership</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Message</label>
+                                    <textarea class="form-textarea" id="contact-message"
+                                        placeholder="Tell us how we can help you..." required rows="6"></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                    Send Message
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div>
+                    <div class="card mb-lg">
+                        <div class="card-header">
+                            <h3 class="card-title">Contact Information</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                                <div class="contact-info-card">
+                                    <div class="contact-icon">📧</div>
+                                    <div>
+                                        <h4 style="margin-bottom: 0.25rem;">Email</h4>
+                                        <p class="text-secondary" style="margin: 0;">support@profitlens.ai</p>
+                                    </div>
+                                </div>
+
+                                <div class="contact-info-card">
+                                    <div class="contact-icon">💬</div>
+                                    <div>
+                                        <h4 style="margin-bottom: 0.25rem;">Live Chat</h4>
+                                        <p class="text-secondary" style="margin: 0;">Click the chat button below</p>
+                                    </div>
+                                </div>
+
+                                <div class="contact-info-card">
+                                    <div class="contact-icon">🌐</div>
+                                    <div>
+                                        <h4 style="margin-bottom: 0.25rem;">Languages</h4>
+                                        <p class="text-secondary" style="margin: 0;">EN, HI, ZH, ID</p>
+                                    </div>
+                                </div>
+
+                                <div class="contact-info-card">
+                                    <div class="contact-icon">⏰</div>
+                                    <div>
+                                        <h4 style="margin-bottom: 0.25rem;">Response Time</h4>
+                                        <p class="text-secondary" style="margin: 0;">Within 24 hours</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Quick Help</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-secondary" style="margin-bottom: 1rem;">
+                                Try our AI chatbot for instant answers to common questions!
+                            </p>
+                            <button class="btn btn-primary" onclick="openChatbot()" style="width: 100%;">
+                                💬 Chat with AI Assistant
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chatbot -->
+    <div class="chatbot-container">
+        <button class="chatbot-button" onclick="toggleChatbot()" id="chatbot-toggle">
+            💬
+        </button>
+
+        <div class="chatbot-window" id="chatbot-window">
+            <div class="chatbot-header">
+                <h3>ProfitLens AI Assistant</h3>
+                <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+            </div>
+
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="chatbot-message">
+                    <div class="chatbot-avatar">🤖</div>
+                    <div class="chatbot-bubble">
+                        <p style="margin: 0;">Hello! I'm your ProfitLens AI Assistant. How can I help you today?</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chatbot-input-container">
+                <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Type your message..."
+                    onkeypress="handleChatKeyPress(event)">
+                <button class="chatbot-send" onclick="sendChatMessage()" id="chatbot-send">
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="translations.js"></script>
+    <script src="components.js"></script>
+    <script src="backend-api.js"></script>
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        // Chatbot state
+        let conversationId = storage.get('chatConversationId') || `conv_${Date.now()}`;
+        let isChatbotOpen = false;
+
+        // Toggle chatbot
+        function toggleChatbot() {
+            const chatbotWindow = document.getElementById('chatbot-window');
+            isChatbotOpen = !isChatbotOpen;
+
+            if (isChatbotOpen) {
+                chatbotWindow.classList.add('active');
+                document.getElementById('chatbot-input').focus();
+            } else {
+                chatbotWindow.classList.remove('active');
+            }
+        }
+
+        // Open chatbot
+        function openChatbot() {
+            if (!isChatbotOpen) {
+                toggleChatbot();
+            }
+        }
+
+        // Add message to chat
+        function addChatMessage(content, isUser = false) {
+            const messagesContainer = document.getElementById('chatbot-messages');
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chatbot-message ${isUser ? 'user' : ''}`;
+            messageDiv.innerHTML = `
+        <div class="chatbot-avatar">${isUser ? '👤' : '🤖'}</div>
+        <div class="chatbot-bubble">
+          <p style="margin: 0;">${content}</p>
+        </div>
+      `;
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('chatbot-messages');
+
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'chatbot-message';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = `
+        <div class="chatbot-avatar">🤖</div>
+        <div class="chatbot-bubble">
+          <div class="chatbot-typing">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      `;
+
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Remove typing indicator
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Send chat message
+        async function sendChatMessage() {
+            const input = document.getElementById('chatbot-input');
+            const sendBtn = document.getElementById('chatbot-send');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add user message
+            addChatMessage(message, true);
+            input.value = '';
+            sendBtn.disabled = true;
+
+            // Show typing
+            showTypingIndicator();
+
+            try {
+                const user = authManager.getCurrentUser();
+                const response = await backendAPI.sendChatMessage(
+                    message,
+                    currentLanguage,
+                    user?.id || null,
+                    conversationId
+                );
+
+                if (response.success) {
+                    removeTypingIndicator();
+                    addChatMessage(response.response);
+
+                    // Save conversation ID
+                    conversationId = response.conversationId;
+                    storage.set('chatConversationId', conversationId);
+                } else {
+                    throw new Error(response.error);
+                }
+            } catch (error) {
+                removeTypingIndicator();
+                addChatMessage('Sorry, I encountered an error. Please try again or contact support.');
+                console.error('Chatbot error:', error);
+            } finally {
+                sendBtn.disabled = false;
+                input.focus();
+            }
+        }
+
+        // Handle Enter key in chat
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        // Handle contact form submission
+        async function handleContactSubmit(event) {
+            event.preventDefault();
+
+            const formData = {
+                name: document.getElementById('contact-name').value,
+                email: document.getElementById('contact-email').value,
+                subject: document.getElementById('contact-subject').value,
+                message: document.getElementById('contact-message').value,
+                userId: authManager.getCurrentUser()?.id || null
+            };
+
+            try {
+                const response = await backendAPI.submitContact(formData);
+
+                if (response.success) {
+                    toast.success('Message sent successfully! We\'ll get back to you soon.');
+                    document.getElementById('contact-form').reset();
+                } else {
+                    throw new Error(response.error);
+                }
+            } catch (error) {
+                toast.error('Failed to send message. Please try again.');
+                console.error('Contact form error:', error);
+            }
+        }
+    </script>
+</body>
+
+</html>

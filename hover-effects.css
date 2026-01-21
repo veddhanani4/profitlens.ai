@@ -1,0 +1,465 @@
+/* ProfitLens AI - Enhanced Hover Effects & Animations */
+
+/* ============================================
+   SMOOTH TRANSITIONS
+   ============================================ */
+
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ============================================
+   BUTTON HOVER EFFECTS
+   ============================================ */
+
+.btn {
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-base);
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-hover);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+.btn-secondary:hover {
+    background: var(--color-bg-tertiary);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* ============================================
+   CARD HOVER EFFECTS
+   ============================================ */
+
+.card {
+    transition: all var(--transition-base);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    border-color: var(--color-primary);
+}
+
+.feature-card:hover {
+    background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-tertiary) 100%);
+}
+
+.pricing-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 16px 32px rgba(99, 102, 241, 0.3);
+    border-color: var(--color-primary);
+}
+
+.pricing-card.popular:hover {
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
+}
+
+/* ============================================
+   LINK HOVER EFFECTS
+   ============================================ */
+
+a {
+    position: relative;
+    transition: all var(--transition-fast);
+}
+
+a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-primary);
+    transition: width var(--transition-base);
+}
+
+a:hover::after {
+    width: 100%;
+}
+
+.navbar-link {
+    position: relative;
+}
+
+.navbar-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: var(--color-primary);
+    transition: width var(--transition-base);
+}
+
+.navbar-link:hover::after,
+.navbar-link.active::after {
+    width: 80%;
+}
+
+.navbar-link:hover {
+    color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   INPUT HOVER EFFECTS
+   ============================================ */
+
+.form-input {
+    transition: all var(--transition-base);
+}
+
+.form-input:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    transform: scale(1.01);
+}
+
+/* ============================================
+   PASSWORD TOGGLE (EYE ICON) - FIXED ALIGNMENT
+   ============================================ */
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    z-index: 10;
+    line-height: 1;
+}
+
+.password-toggle:hover {
+    color: var(--color-primary);
+    transform: translateY(-50%) scale(1.2);
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 50%;
+}
+
+.password-toggle:active {
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Fix for password input with icon */
+.form-group.password-group {
+    position: relative;
+}
+
+.form-group.password-group .form-input {
+    padding-right: 3rem;
+    /* Make room for eye icon */
+}
+
+/* ============================================
+   ICON HOVER EFFECTS
+   ============================================ */
+
+.feature-icon {
+    transition: all var(--transition-base);
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.2) rotate(5deg);
+    filter: drop-shadow(0 4px 8px rgba(99, 102, 241, 0.3));
+}
+
+/* ============================================
+   IMAGE HOVER EFFECTS
+   ============================================ */
+
+img {
+    transition: all var(--transition-base);
+}
+
+img:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+/* ============================================
+   TABLE ROW HOVER
+   ============================================ */
+
+table tr {
+    transition: all var(--transition-fast);
+}
+
+table tr:hover {
+    background: var(--color-bg-secondary);
+    transform: scale(1.01);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   TOOLTIP HOVER
+   ============================================ */
+
+[title] {
+    position: relative;
+}
+
+[title]:hover::before {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem 1rem;
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: tooltipFadeIn 0.2s ease;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* ============================================
+   NAVBAR HOVER EFFECTS
+   ============================================ */
+
+.navbar {
+    transition: all var(--transition-base);
+}
+
+.navbar:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   DROPDOWN HOVER
+   ============================================ */
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-base);
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* ============================================
+   BADGE HOVER
+   ============================================ */
+
+.badge,
+.status-badge,
+.priority-badge {
+    transition: all var(--transition-fast);
+}
+
+.badge:hover,
+.status-badge:hover,
+.priority-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   SMOOTH SCROLL
+   ============================================ */
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* ============================================
+   FOCUS VISIBLE (ACCESSIBILITY)
+   ============================================ */
+
+*:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+button:focus-visible,
+a:focus-visible {
+    transform: scale(1.05);
+}
+
+/* ============================================
+   LOADING SPINNER HOVER
+   ============================================ */
+
+.spinner {
+    transition: all var(--transition-fast);
+}
+
+.spinner:hover {
+    animation-duration: 0.4s !important;
+}
+
+/* ============================================
+   CHATBOT BUTTON HOVER
+   ============================================ */
+
+.chatbot-button {
+    transition: all var(--transition-base);
+}
+
+.chatbot-button:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+.chatbot-button:active {
+    transform: scale(1.05) rotate(0deg);
+}
+
+/* ============================================
+   RATING STARS HOVER
+   ============================================ */
+
+.rating-stars span {
+    transition: all var(--transition-fast);
+}
+
+.rating-stars span:hover {
+    transform: scale(1.3) rotate(15deg);
+    filter: drop-shadow(0 2px 4px rgba(255, 193, 7, 0.5));
+}
+
+/* ============================================
+   THEME TOGGLE BUTTON
+   ============================================ */
+
+#theme-toggle {
+    transition: all var(--transition-base);
+}
+
+#theme-toggle:hover {
+    transform: rotate(180deg) scale(1.1);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* ============================================
+   PULSE ANIMATION
+   ============================================ */
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* ============================================
+   GLOW EFFECT
+   ============================================ */
+
+.glow {
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    transition: box-shadow var(--transition-base);
+}
+
+.glow:hover {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+}
+
+/* ============================================
+   RIPPLE EFFECT
+   ============================================ */
+
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::after {
+    width: 200px;
+    height: 200px;
+}

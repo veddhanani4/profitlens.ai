@@ -1,0 +1,31 @@
+{
+  "name": "profitlens-ai",
+  "version": "1.0.0",
+  "description": "AI-powered profit leak detection and electricity bill intelligence for SMBs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "ai",
+    "business-intelligence",
+    "profit-optimization",
+    "claude",
+    "smb"
+  ],
+  "author": "ProfitLens AI",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

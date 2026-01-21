@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Send Feedback - ProfitLens AI">
+    <title>Feedback & Complaints - ProfitLens AI</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="responsive.css">
+
+    <style>
+        .feedback-container {
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all var(--transition-fast);
+        }
+
+        .tab-btn.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2rem;
+            margin: 1rem 0;
+        }
+
+        .rating-stars span {
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            opacity: 0.3;
+        }
+
+        .rating-stars span.active,
+        .rating-stars span:hover {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .priority-low {
+            background: rgba(52, 211, 153, 0.2);
+            color: #34d399;
+        }
+
+        .priority-medium {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .priority-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <div class="feedback-container">
+        <div class="container" style="max-width: 800px;">
+            <!-- Header -->
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h1>Feedback & Complaints</h1>
+                <p class="text-secondary">We value your feedback and take complaints seriously</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('feedback')">
+                    📝 Send Feedback
+                </button>
+                <button class="tab-btn" onclick="switchTab('complaint')">
+                    ⚠️ File Complaint
+                </button>
+            </div>
+
+            <!-- Feedback Form -->
+            <div id="feedback-tab" class="tab-content active">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Share Your Feedback</h3>
+                        <p class="text-secondary" style="font-size: var(--font-size-sm); margin-top: 0.5rem;">
+                            Help us improve ProfitLens AI with your valuable feedback
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <form id="feedback-form" onsubmit="submitFeedback(event)">
+                            <div class="form-group">
+                                <label class="form-label">Your Name</label>
+                                <input type="text" class="form-input" id="feedback-name" required
+                                    placeholder="John Doe">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-input" id="feedback-email" required
+                                    placeholder="your@email.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Category</label>
+                                <select class="form-input" id="feedback-category" required>
+                                    <option value="">Select category</option>
+                                    <option value="feature">Feature Request</option>
+                                    <option value="improvement">Improvement Suggestion</option>
+                                    <option value="bug">Bug Report</option>
+                                    <option value="ui">UI/UX Feedback</option>
+                                    <option value="performance">Performance Issue</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Rate Your Experience</label>
+                                <div class="rating-stars" id="rating-stars">
+                                    <span data-rating="1" onclick="setRating(1)">⭐</span>
+                                    <span data-rating="2" onclick="setRating(2)">⭐</span>
+                                    <span data-rating="3" onclick="setRating(3)">⭐</span>
+                                    <span data-rating="4" onclick="setRating(4)">⭐</span>
+                                    <span data-rating="5" onclick="setRating(5)">⭐</span>
+                                </div>
+                                <input type="hidden" id="feedback-rating" value="0">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Your Feedback</label>
+                                <textarea class="form-input" id="feedback-message" rows="6" required
+                                    placeholder="Tell us what you think..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                Send Feedback
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complaint Form -->
+            <div id="complaint-tab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>File a Complaint</h3>
+                        <p class="text-secondary" style="font-size: var(--font-size-sm); margin-top: 0.5rem;">
+                            We'll investigate and respond within 24-48 hours
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <form id="complaint-form" onsubmit="submitComplaint(event)">
+                            <div class="form-group">
+                                <label class="form-label">Your Name</label>
+                                <input type="text" class="form-input" id="complaint-name" required
+                                    placeholder="John Doe">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-input" id="complaint-email" required
+                                    placeholder="your@email.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Complaint Category</label>
+                                <select class="form-input" id="complaint-category" required>
+                                    <option value="">Select category</option>
+                                    <option value="billing">Billing Issue</option>
+                                    <option value="service">Service Quality</option>
+                                    <option value="technical">Technical Problem</option>
+                                    <option value="data">Data Privacy Concern</option>
+                                    <option value="support">Support Response</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Priority Level</label>
+                                <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                                    <label class="priority-badge priority-low">
+                                        <input type="radio" name="priority" value="low" required
+                                            style="margin-right: 0.5rem;">
+                                        Low
+                                    </label>
+                                    <label class="priority-badge priority-medium">
+                                        <input type="radio" name="priority" value="medium" required
+                                            style="margin-right: 0.5rem;">
+                                        Medium
+                                    </label>
+                                    <label class="priority-badge priority-high">
+                                        <input type="radio" name="priority" value="high" required
+                                            style="margin-right: 0.5rem;">
+                                        High
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Order/Transaction ID (if applicable)</label>
+                                <input type="text" class="form-input" id="complaint-order-id" placeholder="Optional">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Describe Your Complaint</label>
+                                <textarea class="form-input" id="complaint-description" rows="6" required
+                                    placeholder="Please provide detailed information about your complaint..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                Submit Complaint
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="translations.js"></script>
+    <script src="components.js"></script>
+    <script src="shared-components.js"></script>
+    <script src="auth.js"></script>
+    <script src="security.js"></script>
+    <script src="email-service.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        // Initialize
+        initializeHeaderFooter('');
+        initializeSecurity();
+        initializeEmailService();
+
+        // Pre-fill user data if logged in
+        const user = authManager.getCurrentUser();
+        if (user) {
+            document.getElementById('feedback-name').value = user.fullName || '';
+            document.getElementById('feedback-email').value = user.email || '';
+            document.getElementById('complaint-name').value = user.fullName || '';
+            document.getElementById('complaint-email').value = user.email || '';
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+
+            if (tab === 'feedback') {
+                tabs[0].classList.add('active');
+                document.getElementById('feedback-tab').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('complaint-tab').classList.add('active');
+            }
+        }
+
+        // Set rating
+        let selectedRating = 0;
+        function setRating(rating) {
+            selectedRating = rating;
+            document.getElementById('feedback-rating').value = rating;
+
+            const stars = document.querySelectorAll('.rating-stars span');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        // Submit feedback
+        async function submitFeedback(event) {
+            event.preventDefault();
+
+            const feedbackData = {
+                name: document.getElementById('feedback-name').value,
+                email: document.getElementById('feedback-email').value,
+                category: document.getElementById('feedback-category').value,
+                rating: selectedRating,
+                message: document.getElementById('feedback-message').value
+            };
+
+            if (feedbackData.rating === 0) {
+                toast.error('Please rate your experience');
+                return;
+            }
+
+            try {
+                const result = await sendFeedback(feedbackData);
+
+                if (result.success) {
+                    toast.success('Thank you for your feedback! We\'ll review it shortly.');
+                    document.getElementById('feedback-form').reset();
+                    setRating(0);
+                } else {
+                    toast.error('Failed to send feedback. Please try again.');
+                }
+            } catch (error) {
+                toast.error('An error occurred. Please try again.');
+            }
+        }
+
+        // Submit complaint
+        async function submitComplaint(event) {
+            event.preventDefault();
+
+            const priority = document.querySelector('input[name="priority"]:checked').value;
+
+            const complaintData = {
+                name: document.getElementById('complaint-name').value,
+                email: document.getElementById('complaint-email').value,
+                category: document.getElementById('complaint-category').value,
+                priority,
+                orderId: document.getElementById('complaint-order-id').value,
+                description: document.getElementById('complaint-description').value
+            };
+
+            try {
+                const result = await sendComplaint(complaintData);
+
+                if (result.success) {
+                    toast.success(`Complaint submitted! Ticket #${result.ticketNumber}`);
+
+                    // Show ticket number
+                    alert(`Your complaint has been submitted successfully!\n\nTicket Number: ${result.ticketNumber}\n\nWe'll respond within 24-48 hours via email.`);
+
+                    document.getElementById('complaint-form').reset();
+                } else {
+                    toast.error('Failed to submit complaint. Please try again.');
+                }
+            } catch (error) {
+                toast.error('An error occurred. Please try again.');
+            }
+        }
+    </script>
+</body>
+
+</html>

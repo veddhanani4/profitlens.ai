@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Electricity Bill Analyzer - ProfitLens AI">
+  <title>Electricity Analyzer - ProfitLens AI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .dashboard-header {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .usage-stats {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .usage-stat {
+      flex: 1;
+      padding: 1rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+    }
+
+    .usage-stat-label {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-tertiary);
+      margin-bottom: 0.5rem;
+    }
+
+    .usage-stat-value {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-primary);
+    }
+
+    .overcharge-alert {
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+      border: 2px solid var(--color-error);
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.5rem;
+    }
+
+    .overcharge-amount {
+      font-size: var(--font-size-4xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-error);
+      margin: 1rem 0;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .comparison-item {
+      padding: 1rem;
+      background: var(--color-bg-secondary);
+      border-radius: var(--radius-md);
+    }
+
+    .complaint-draft {
+      background: var(--color-bg-secondary);
+      padding: 1.5rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-relaxed);
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-content">
+        <a href="index.html" class="navbar-brand">ProfitLens AI</a>
+
+        <ul class="navbar-menu">
+          <li><a href="profit-analyzer.html" class="navbar-link">Profit Analyzer</a></li>
+          <li><a href="electricity-analyzer.html" class="navbar-link active">Electricity Analyzer</a></li>
+          <li>
+            <button class="btn btn-secondary btn-sm" onclick="logout()">
+              <span data-i18n="nav.logout">Logout</span>
+            </button>
+          </li>
+          <li>
+            <div class="language-selector">
+              <button class="language-btn" id="language-btn">
+                <span>🇬🇧</span>
+                <span>English</span>
+                <span>▼</span>
+              </button>
+              <div class="language-dropdown" id="language-dropdown"></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Header -->
+  <section class="dashboard-header">
+    <div class="container">
+      <h1 data-i18n="electricityAnalyzer.title">Electricity Bill Analyzer</h1>
+      <p class="text-secondary" data-i18n="electricityAnalyzer.subtitle">
+        Upload or enter your electricity bill details
+      </p>
+
+      <!-- Usage Stats -->
+      <div class="usage-stats">
+        <div class="usage-stat">
+          <div class="usage-stat-label">Current Plan</div>
+          <div class="usage-stat-value" id="current-plan">Free</div>
+        </div>
+        <div class="usage-stat">
+          <div class="usage-stat-label">Analyses Used</div>
+          <div class="usage-stat-value" id="analyses-used">0 / 2</div>
+        </div>
+        <div class="usage-stat">
+          <div class="usage-stat-label">Total Overcharges Detected</div>
+          <div class="usage-stat-value" id="total-overcharges">₹0</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-2">
+        <!-- Input Form -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Bill Details</h3>
+              <p class="card-description">
+                Enter your electricity bill information for analysis
+              </p>
+            </div>
+            <div class="card-body">
+              <form id="electricity-form" onsubmit="analyzeElectricityBill(event)">
+                <div class="form-group">
+                  <label class="form-label" data-i18n="electricityAnalyzer.billAmount">Bill Amount
+                    (₹)</label>
+                  <input type="number" class="form-input" id="billAmount" placeholder="5000" min="0" step="10" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" data-i18n="electricityAnalyzer.unitsConsumed">Units
+                    Consumed (kWh)</label>
+                  <input type="number" class="form-input" id="unitsConsumed" placeholder="500" min="0" step="1"
+                    required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" data-i18n="electricityAnalyzer.billingPeriod">Billing
+                    Period</label>
+                  <input type="text" class="form-input" id="billingPeriod" placeholder="January 2026" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" data-i18n="electricityAnalyzer.provider">Electricity
+                    Provider</label>
+                  <input type="text" class="form-input" id="provider" placeholder="Your electricity provider">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                  <span data-i18n="electricityAnalyzer.analyze">Analyze Bill</span>
+                  <span>→</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div>
+          <div id="results-container">
+            <div class="card" style="text-align: center; padding: 3rem;">
+              <div style="font-size: 4rem; margin-bottom: 1rem;">⚡</div>
+              <h3>Ready to Analyze</h3>
+              <p class="text-secondary">
+                Enter your electricity bill details and click "Analyze Bill" to detect overcharges
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="utils.js"></script>
+  <script src="translations.js"></script>
+  <script src="components.js"></script>
+  <script src="prompts.js"></script>
+  <script src="claude-api.js"></script>
+  <script src="backend-api.js"></script>
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+
+  <script>
+    // Check authentication
+    if (!authManager.isAuthenticated()) {
+      window.location.href = 'auth.html';
+    }
+
+    // Update usage stats
+    function updateUsageStats() {
+      const user = authManager.getCurrentUser();
+      const plan = CONFIG.pricing[user.plan];
+      const stats = authManager.getUsageStats();
+
+      document.getElementById('current-plan').textContent = plan.name;
+
+      const used = stats.electricityAnalysis.used;
+      const limit = stats.electricityAnalysis.limit === -1 ? '∞' : stats.electricityAnalysis.limit;
+      document.getElementById('analyses-used').textContent = `${used} / ${limit}`;
+
+      // Calculate total overcharges from storage
+      const savedAnalyses = storage.get('electricityAnalyses', []);
+      const totalOvercharges = savedAnalyses.reduce((sum, analysis) => {
+        return sum + (analysis.data?.analysis?.overchargeAmount || 0);
+      }, 0);
+      document.getElementById('total-overcharges').textContent = formatCurrency(totalOvercharges);
+    }
+
+    updateUsageStats();
+
+    // Analyze electricity bill
+    async function analyzeElectricityBill(event) {
+      event.preventDefault();
+
+      // Check feature access
+      if (!checkFeatureAccess('electricityAnalysis')) {
+        return;
+      }
+
+      // Check API configuration
+      if (!checkAPIConfiguration()) {
+        return;
+      }
+
+      // Get form data
+      const billData = {
+        billAmount: parseFloat(document.getElementById('billAmount').value),
+        unitsConsumed: parseFloat(document.getElementById('unitsConsumed').value),
+        billingPeriod: document.getElementById('billingPeriod').value,
+        provider: document.getElementById('provider').value || 'Not specified'
+      };
+
+      // Show loading
+      const resultsContainer = document.getElementById('results-container');
+      resultsContainer.innerHTML = `
+        <div class="card" style="text-align: center; padding: 3rem;">
+          <div class="spinner" style="margin: 0 auto 1rem;"></div>
+          <h3 data-i18n="electricityAnalyzer.analyzing">Analyzing...</h3>
+          <p class="text-secondary">AI is analyzing your electricity bill for overcharges</p>
+        </div>
+      `;
+
+      try {
+        // Call Claude API
+        const result = await claudeAPI.analyzeElectricityBill(billData, currentLanguage);
+
+        if (!result.success) {
+          throw new Error(result.error);
+        }
+
+        // Increment usage
+        authManager.incrementUsage('electricityAnalysis');
+        updateUsageStats();
+
+        // Save analysis
+        const savedAnalyses = storage.get('electricityAnalyses', []);
+        savedAnalyses.push({
+          id: generateId(),
+          timestamp: new Date().toISOString(),
+          data: result.data,
+          billData
+        });
+        storage.set('electricityAnalyses', savedAnalyses);
+
+        // Display results
+        displayResults(result.data, billData);
+
+        toast.success('Analysis complete!');
+      } catch (error) {
+        console.error('Analysis error:', error);
+        resultsContainer.innerHTML = `
+          <div class="card" style="text-align: center; padding: 3rem;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">⚠️</div>
+            <h3>Analysis Failed</h3>
+            <p class="text-secondary">${error.message}</p>
+            <button class="btn btn-primary" onclick="location.reload()" style="margin-top: 1rem;">
+              Try Again
+            </button>
+          </div>
+        `;
+        toast.error('Analysis failed: ' + error.message);
+      }
+    }
+
+    // Display analysis results
+    function displayResults(data, billData) {
+      const resultsContainer = document.getElementById('results-container');
+      const analysis = data.analysis;
+
+      let html = '';
+
+      // Overcharge Detection
+      if (analysis.overchargeDetected) {
+        html += `
+          <div class="overcharge-alert">
+            <h3 style="color: var(--color-error); margin-bottom: 0.5rem;">
+              ⚠️ <span data-i18n="electricityAnalyzer.overchargeDetected">Overcharge Detected</span>
+            </h3>
+            <div class="overcharge-amount">
+              ${formatCurrency(analysis.overchargeAmount)}
+            </div>
+            <p style="color: var(--color-text-secondary);">
+              ${formatPercentage(analysis.overchargePercentage)} overcharge detected in your bill
+            </p>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="card" style="margin-bottom: 1.5rem; text-align: center; padding: 2rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">✓</div>
+            <h3 style="color: var(--color-success);" data-i18n="electricityAnalyzer.noOvercharge">
+              No Overcharge Detected
+            </h3>
+            <p class="text-secondary">Your bill appears to be accurate</p>
+          </div>
+        `;
+      }
+
+      // Bill Comparison
+      html += `
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-header">
+            <h3 class="card-title">Bill Analysis</h3>
+          </div>
+          <div class="card-body">
+            <div class="comparison-grid">
+              <div class="comparison-item">
+                <div class="text-secondary" style="font-size: var(--font-size-sm); margin-bottom: 0.5rem;">
+                  <span data-i18n="electricityAnalyzer.expectedAmount">Expected Amount</span>
+                </div>
+                <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-success);">
+                  ${formatCurrency(analysis.expectedAmount)}
+                </div>
+              </div>
+              <div class="comparison-item">
+                <div class="text-secondary" style="font-size: var(--font-size-sm); margin-bottom: 0.5rem;">
+                  <span data-i18n="electricityAnalyzer.actualAmount">Actual Amount</span>
+                </div>
+                <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold);">
+                  ${formatCurrency(analysis.actualAmount)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Findings
+      if (data.findings && data.findings.length > 0) {
+        html += `
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card-header">
+              <h3 class="card-title">Findings</h3>
+            </div>
+            <div class="card-body">
+              ${data.findings.map(finding => `
+                <div style="padding: 1rem; background: var(--color-bg-secondary); border-radius: var(--radius-md); margin-bottom: 1rem;">
+                  <h4 style="margin-bottom: 0.5rem;">${finding.issue}</h4>
+                  <p style="color: var(--color-text-secondary); margin-bottom: 0.5rem;">${finding.impact}</p>
+                  <p style="font-size: var(--font-size-sm); color: var(--color-text-tertiary);">
+                    <strong>Evidence:</strong> ${finding.evidence}
+                  </p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // Savings Opportunities
+      if (data.savingsOpportunities && data.savingsOpportunities.length > 0) {
+        html += `
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card-header">
+              <h3 class="card-title" data-i18n="electricityAnalyzer.savingsOpportunity">Savings Opportunities</h3>
+            </div>
+            <div class="card-body">
+              ${data.savingsOpportunities.map(opp => `
+                <div style="padding: 1rem; background: var(--color-bg-secondary); border-radius: var(--radius-md); margin-bottom: 1rem;">
+                  <h4 style="margin-bottom: 0.5rem;">${opp.opportunity}</h4>
+                  <div style="font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--color-success); margin: 0.5rem 0;">
+                    ${formatCurrency(opp.potentialSavings)}/month
+                  </div>
+                  <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+                    ${opp.implementation}
+                  </p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // Complaint Draft
+      if (data.complaintDraft && analysis.overchargeDetected) {
+        html += `
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Complaint Draft</h3>
+              <p class="card-description">Use this draft to file a complaint with your electricity provider</p>
+            </div>
+            <div class="card-body">
+              <div class="complaint-draft">${data.complaintDraft}</div>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-primary" onclick="downloadComplaint()">
+                <span data-i18n="electricityAnalyzer.downloadComplaint">Download Complaint</span>
+                <span>↓</span>
+              </button>
+              <button class="btn btn-secondary" onclick="copyComplaint()">
+                <span>Copy to Clipboard</span>
+              </button>
+            </div>
+          </div>
+        `;
+
+        // Store complaint for download
+        window.currentComplaint = data.complaintDraft;
+      }
+
+      resultsContainer.innerHTML = html;
+    }
+
+    // Download complaint
+    function downloadComplaint() {
+      if (window.currentComplaint) {
+        downloadFile(
+          window.currentComplaint,
+          `electricity-complaint-${new Date().toISOString().split('T')[0]}.txt`,
+          'text/plain'
+        );
+        toast.success(getTranslation(currentLanguage, 'notifications.downloadStarted'));
+      }
+    }
+
+    // Copy complaint to clipboard
+    async function copyComplaint() {
+      if (window.currentComplaint) {
+        const success = await copyToClipboard(window.currentComplaint);
+        if (success) {
+          toast.success(getTranslation(currentLanguage, 'notifications.copied'));
+        } else {
+          toast.error('Failed to copy to clipboard');
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>
