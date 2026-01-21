@@ -19,20 +19,7 @@
             "use": "@vercel/static"
         }
     ],
-    "routes": [
-        {
-            "src": "/api/(.*)",
-            "dest": "/server.js"
-        },
-        {
-            "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|webp|ico|woff|woff2|ttf|eot))",
-            "dest": "/$1"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/$1"
-        }
-    ],
+  
     "env": {
         "ANTHROPIC_API_KEY": "@anthropic_api_key",
         "PORT": "3000"
@@ -66,4 +53,5 @@
             "destination": "/server.js"
         }
     ]
+
 }
